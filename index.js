@@ -37,7 +37,10 @@ async function run() {
     const classesCollection = client.db("summerCampDB").collection("classes");
 
     // USERS
-    //get user by id
+
+    // get all users
+
+    // get user by id
     app.get("/users/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
@@ -45,10 +48,15 @@ async function run() {
       res.send(result);
     });
 
-    //get user by email
+    // get user by email
     app.get("/users", async (req, res) => {
       try {
         const email = req.query.email;
+        if(!email) {
+          const result = await usersCollection.find().toArray()
+          res.send(result)
+          return
+        }
         const query = { email: email };
         const result = await usersCollection.findOne(query);
         if(result){
@@ -63,7 +71,7 @@ async function run() {
       
     });
 
-    //posting user info to database
+    // posting user info to database
     app.post("/users", async (req, res) => {
       const user = req.body;
       const query = { email: user.email };
@@ -75,13 +83,14 @@ async function run() {
       res.send(result);
     });
 
-    // user by role
+    // get users by role
     app.get("/usersRole/:role", async (req, res) => {
       const role = req.params.role;
       const query = { role: role };
       const result = await usersCollection.find(query).toArray();
       res.send(result);
     });
+
 
 
     // CLASSES
@@ -94,6 +103,24 @@ async function run() {
       res.send(result)
     })
 
+    // get classes by instructor email
+
+    app.get("/classes", async (req, res) => {
+      try {
+        const email = req.query.email;
+        const query = { instructorEmail: email };
+        const result = await classesCollection.find(query).toArray();
+        if(result){
+          res.send(result);
+        }else {
+          res.send([])
+        }
+        
+      } finally {
+
+      }
+      
+    });
 
 
 
