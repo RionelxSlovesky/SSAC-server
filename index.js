@@ -36,6 +36,7 @@ async function run() {
     const usersCollection = client.db("summerCampDB").collection("users");
     const classesCollection = client.db("summerCampDB").collection("classes");
     const selectedClassesCollection = client.db("summerCampDB").collection("selectedClasses");
+    const enrolledClassesCollection = client.db("summerCampDB").collection("enrolledClasses");
 
     // USERS
 
@@ -133,7 +134,6 @@ async function run() {
     })
 
     // get classes by instructor email
-
     app.get("/classes", async (req, res) => {
       try {
         const email = req.query.email;
@@ -159,7 +159,6 @@ async function run() {
     });
 
     // Approve class
-
     app.patch('/classes/approve/:id', async(req,res) => {
       const id = req.params.id
       const filter = {_id: new ObjectId(id)};
@@ -174,7 +173,6 @@ async function run() {
     })
 
     // Deny class
-
     app.patch('/classes/deny/:id', async(req,res) => {
       const id = req.params.id
       const filter = {_id: new ObjectId(id)};
@@ -189,13 +187,40 @@ async function run() {
     })
 
     // Feedback
-
     app.patch('/classes/feedback/:id', async(req,res) => {
       const id = req.params.id
       const feedback = req.body;
       const filter = {_id: new ObjectId(id)};
       const updateDoc = {
         $set: feedback
+      }
+
+      const result = await classesCollection.updateOne(filter, updateDoc)
+      res.send(result)
+    })
+
+    // Decrementing available seats
+    app.patch('/classes/seats/:id', async(req,res) => {
+      const id = req.params.id
+      const filter = {_id: new ObjectId(id)};
+      const updateDoc = {
+        $inc: {
+          seats: -1
+        }
+      }
+
+      const result = await classesCollection.updateOne(filter, updateDoc)
+      res.send(result)
+    })
+
+    // Incrementing enrolled
+    app.patch('/classes/enrolled/:id', async(req,res) => {
+      const id = req.params.id
+      const filter = {_id: new ObjectId(id)};
+      const updateDoc = {
+        $inc: {
+          enrolled: 1
+        }
       }
 
       const result = await classesCollection.updateOne(filter, updateDoc)
@@ -245,6 +270,17 @@ async function run() {
 
       const result = await selectedClassesCollection.deleteOne(query);
       res.send(result);
+    })
+
+
+    // ENROLLED CLASSES
+
+    // Post enrolled classes
+    app.post('/enrolledClasses', async(req,res) => {
+      const item = req.body;
+      console.log(item)
+      const result = await enrolledClassesCollection.insertOne(item)
+      res.send(result)
     })
 
 
