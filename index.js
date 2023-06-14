@@ -36,7 +36,6 @@ async function run() {
       const usersCollection = client.db("summerCampDB").collection("users");
 
       // users
-
       app.post('/users', async(req, res) => {
         const user = req.body;
         const query = {email: user.email}
@@ -45,6 +44,17 @@ async function run() {
           return res.send({message: 'user already exists'})
         }
         const result = await usersCollection.insertOne(user);
+        res.send(result)
+      })
+
+
+
+
+      //instructors
+      app.get('/usersRole/:role', async(req,res) => {
+        const role = req.params.role;
+        const query = {role: role}
+        const result = await usersCollection.find(query).toArray()
         res.send(result)
       })
 
