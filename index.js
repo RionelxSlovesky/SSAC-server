@@ -35,6 +35,7 @@ async function run() {
 
     const usersCollection = client.db("summerCampDB").collection("users");
     const classesCollection = client.db("summerCampDB").collection("classes");
+    const selectedClassesCollection = client.db("summerCampDB").collection("selectedClasses");
 
     // USERS
 
@@ -198,6 +199,17 @@ async function run() {
       }
 
       const result = await classesCollection.updateOne(filter, updateDoc)
+      res.send(result)
+    })
+
+
+    // SELECTED CLASSES
+
+    // Post selected classes
+    app.post('/selectedClasses', async(req,res) => {
+      const item = req.body;
+      console.log(item)
+      const result = await selectedClassesCollection.insertOne(item)
       res.send(result)
     })
 
