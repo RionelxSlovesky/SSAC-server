@@ -158,6 +158,12 @@ async function run() {
       
     });
 
+    // get 6 most enrolled classes
+    app.get('/classes/popular', async(req,res) => {
+      const result = await classesCollection.find().sort({enrolled: -1}).limit(6).toArray()
+          res.send(result)
+    })
+
     // Approve class
     app.patch('/classes/approve/:id', async(req,res) => {
       const id = req.params.id
