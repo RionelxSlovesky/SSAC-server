@@ -38,8 +38,6 @@ async function run() {
 
     // USERS
 
-    // get all users
-
     // get user by id
     app.get("/users/:id", async (req, res) => {
       const id = req.params.id;
@@ -90,6 +88,36 @@ async function run() {
       const result = await usersCollection.find(query).toArray();
       res.send(result);
     });
+
+
+    // Make user instructor
+    app.patch('/users/instructor/:id', async(req,res) => {
+      const id = req.params.id
+      const filter = {_id: new ObjectId(id)};
+      const updateDoc = {
+        $set: {
+          role: 'instructor'
+        }
+      }
+
+      const result = await usersCollection.updateOne(filter, updateDoc)
+      res.send(result)
+    })
+
+
+    // Make user admin
+    app.patch('/users/admin/:id', async(req,res) => {
+      const id = req.params.id
+      const filter = {_id: new ObjectId(id)};
+      const updateDoc = {
+        $set: {
+          role: 'admin'
+        }
+      }
+
+      const result = await usersCollection.updateOne(filter, updateDoc)
+      res.send(result)
+    })
 
 
 
