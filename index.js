@@ -35,8 +35,8 @@ async function run() {
 
       const usersCollection = client.db("summerCampDB").collection("users");
 
-      // users
-
+      // USERS
+      //get user by id
       app.get('/users/:id', async(req,res) => {
         const id = req.params.id;
         const query = { _id: new ObjectId(id)}
@@ -44,6 +44,15 @@ async function run() {
         res.send(result)
       })
 
+      //get user by email
+      app.get('/users', async(req,res) => {
+        const email = req.query.email;
+        const query = { email: email }
+        const result = await usersCollection.findOne(query);
+        res.send(result)
+      })
+
+      //posting user info to database
       app.post('/users', async(req, res) => {
         const user = req.body;
         const query = {email: user.email}
