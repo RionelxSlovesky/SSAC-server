@@ -3,7 +3,7 @@ const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 5000;
 require("dotenv").config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 
 // middlewares
@@ -36,6 +36,14 @@ async function run() {
       const usersCollection = client.db("summerCampDB").collection("users");
 
       // users
+
+      app.get('/users/:id', async(req,res) => {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id)}
+        const result = await usersCollection.findOne(query);
+        res.send(result)
+      })
+
       app.post('/users', async(req, res) => {
         const user = req.body;
         const query = {email: user.email}
@@ -50,7 +58,7 @@ async function run() {
 
 
 
-      //instructors
+      // user by role
       app.get('/usersRole/:role', async(req,res) => {
         const role = req.params.role;
         const query = {role: role}
