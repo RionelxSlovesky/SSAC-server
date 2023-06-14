@@ -275,6 +275,29 @@ async function run() {
 
     // ENROLLED CLASSES
 
+    // Get enrolled classes by email
+    app.get("/enrolledClasses", async (req, res) => {
+      try {
+        const email = req.query.email;
+        if(!email) {
+          const result = await enrolledClassesCollection.find().toArray()
+          res.send(result)
+          return
+        }
+        const query = { studentEmail: email };
+        const result = await enrolledClassesCollection.find(query).toArray();
+        if(result){
+          res.send(result);
+        }else {
+          res.send([])
+        }
+        
+      } finally {
+
+      }
+      
+    });
+
     // Post enrolled classes
     app.post('/enrolledClasses', async(req,res) => {
       const item = req.body;
