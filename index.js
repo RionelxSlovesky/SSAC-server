@@ -205,6 +205,31 @@ async function run() {
 
     // SELECTED CLASSES
 
+    // Get selected classes by email
+
+    app.get("/selectedClasses", async (req, res) => {
+      try {
+        const email = req.query.email;
+        if(!email) {
+          const result = await selectedClassesCollection.find().toArray()
+          res.send(result)
+          return
+        }
+        const query = { studentEmail: email };
+        const result = await selectedClassesCollection.find(query).toArray();
+        if(result){
+          res.send(result);
+        }else {
+          res.send([])
+        }
+        
+      } finally {
+
+      }
+      
+    });
+
+
     // Post selected classes
     app.post('/selectedClasses', async(req,res) => {
       const item = req.body;
